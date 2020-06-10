@@ -1,0 +1,331 @@
+﻿
+@model List<MVCTestForleeandli.ViewModel.OrdersViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    WebGrid grid = new WebGrid(rowsPerPage: 10,canPage:true);
+    grid.Bind(Model,
+    autoSortAndPage: true,
+    rowCount: 10);
+}
+
+<h2>Orders</h2>
+<div id="main" style="padding:25px; background-color:white;">
+    @grid.GetHtml(
+    htmlAttributes: new { id = "gridT", width = "700px" },
+        mode: WebGridPagerModes.All, 
+        firstText: "<< 第一頁",
+        previousText: "< 上一頁",
+        nextText: "下一頁 >",
+        lastText: "最後一頁 >>",
+        columns: new[] {
+        grid.Column("Orders.OrderID",header: "OrderID", canSort: false),
+        grid.Column("Orders.CustomerID",header: "CustomerID", canSort: false),
+        grid.Column("Orders.EmployeeID",header: "EmployeeID", canSort: false),
+        grid.Column("Orders.OrderDate",header: "OrderDate", canSort: false),
+        grid.Column("Orders.RequiredDate",header: "RequiredDate", canSort: false),
+        grid.Column("Orders.ShippedDate",header: "ShippedDate", canSort: false),
+        grid.Column("Orders.ShipVia",header: "ShipVia", canSort: false),
+        grid.Column("Orders.Freight",header: "Freight", canSort: false),
+        grid.Column("Orders.ShipName",header: "ShipName", canSort: false),
+        grid.Column("Orders.ShipAddress",header: "ShipAddress", canSort: false),
+        grid.Column("Orders.ShipCity",header: "ShipCity", canSort: false),
+        grid.Column("Orders.ShipRegion",header: "ShipRegion", canSort: false),
+        grid.Column("Orders.ShipPostalCode",header: "ShipPostalCode", canSort: false),
+        grid.Column("Orders.ShipCountry",header: "ShipCountry", canSort: false),
+        grid.Column(format: (items) =>
+        {
+        WebGrid SubGrid = new WebGrid(source: items.OrderDetailProductViewModel);
+        return SubGrid.GetHtml(
+        htmlAttributes: new { @class = "ChildGrid" ,id = "SubGrid" },
+
+        columns: SubGrid.Columns(
+        SubGrid.Column(header:"OrderId",format: @<span id="OrderID" class="display">@item.OrderDetail.OrderID</span>, canSort: false),
+        SubGrid.Column(header:"ProductID",format: @<span id="ProductID" class="display">@item.OrderDetail.ProductID</span>, canSort: false),
+        SubGrid.Column(header:"UnitPrice",format: @<span>
+                            <span id="UnitPrice" class="display">@item.OrderDetail.UnitPrice</span>
+                            <input class="text" type="text" value="@item.OrderDetail.UnitPrice" style="display:none" />
+                        </span>, canSort: false),
+        SubGrid.Column(header:"Quantity",format: @<span>
+                            <span id="Quantity" class="display">@item.OrderDetail.Quantity</span>
+                            <input class="text" type="text" value="@item.OrderDetail.Quantity" style="display:none" />
+                        </span>, canSort: false),
+        SubGrid.Column(header:"Discount",format: @<span>
+                            <span id="Discount" class="display">@item.OrderDetail.Discount</span>
+                            <input class="text" type="text" value="@item.OrderDetail.Discount" style="display:none" />
+                        </span>, canSort: false),
+        SubGrid.Column(header:"ProductID",format: @<span class="display">@item.Product.ProductID</span>, canSort: false),
+        SubGrid.Column(header:"ProductName",format: @<span>
+                            <span id="ProductName" class="display">@item.Product.ProductName</span>
+                            <input class="text" type="text" value="@item.Product.ProductName" style="display:none" />
+                        </span>, canSort: false),
+        SubGrid.Column(header:"SupplierID",format: @<span>
+                            <span id="SupplierID" class="display">@item.Product.SupplierID</span>
+                            <input class="text" type="text" value="@item.Product.SupplierID" style="display:none" />
+                        </span>, canSort: false),
+        SubGrid.Column(header:"CategoryID",format: @<span>
+                            <span id="CategoryID" class="display">@item.Product.CategoryID</span>
+                            <input class="text" type="text" value="@item.Product.CategoryID" style="display:none" />
+                        </span>, canSort: false),
+        SubGrid.Column(header:"QuantityPerUnit",format: @<span>
+                            <span id="QuantityPerUnit" class="display">@item.Product.QuantityPerUnit</span>
+                            <input class="text" type="text" value="@item.Product.QuantityPerUnit" style="display:none" />
+                        </span>, canSort: false),
+        SubGrid.Column(header:"UnitPrice",format: @<span>
+                            <span id="UnitPrice" class="display">@item.Product.UnitPrice</span>
+                            <input class="text" type="text" value="@item.Product.UnitPrice" style="display:none" />
+                        </span>, canSort: false),
+        SubGrid.Column(header:"UnitsinStock",format: @<span>
+                            <span id="UnitsinStock" class="display">@item.Product.UnitsinStock</span>
+                            <input class="text" type="text" value="@item.Product.UnitsinStock" style="display:none" />
+                        </span>, canSort: false),
+        SubGrid.Column(header:"UnitsOnOrder",format: @<span>
+                            <span id="UnitsOnOrder" class="display">@item.Product.UnitsOnOrder</span>
+                            <input class="text" type="text" value="@item.Product.UnitsOnOrder" style="display:none" />
+                        </span>, canSort: false),
+        SubGrid.Column(header:"RecorderLevel",format: @<span>
+                            <span id="RecorderLevel" class="display">@item.Product.RecorderLevel</span>
+                            <input class="text" type="text" value="@item.Product.RecorderLevel" style="display:none" />
+                        </span>, canSort: false),
+        SubGrid.Column(header:"Discontinued",format: @<span>
+                            <span id="Discontinued" class="display">@item.Product.Discontinued</span>
+                            <input class="text" type="text" value="@Json.Encode(item.Product.Discontinued)" style="display:none" />
+                        </span>, canSort: false),
+        SubGrid.Column(format: @<span class="link">
+                                    <a class="Edit" href="javascript:;">Edit</a>
+                                    <a class="Delete" href="javascript:;">Delete</a>
+                                    <a class="Update" href="javascript:;" style="display:none">Update</a>
+                                    <a class="Cancel" href="javascript:;" style="display:none">Cancel</a>
+                                </span>)
+            )
+        );
+        })
+}
+)
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var size = $("#main #gridT > thead > tr >th").length; // get total column
+            $("#main #gridT > thead > tr >th").last().remove(); // remove last column
+            $("#main #gridT > tbody > tr").each(function (i, el) {
+                $(this).children().first().addClass("hoverEff");
+                var table = $("table", this).parent().html();
+                //加內容到detail
+                $(this).after("<tr><td style='padding:5px; margin:0px;' colspan='" + (size) + "'><a class='addBtn glyphicon glyphicon-plus' href='javascript:;'>Add Data</a>" + table + "</td></tr>");
+                //移除原本跟master同一行的detail
+                $("table", this).parent().remove();
+            });
+            $('body').on("click", ".hoverEff", function () {
+                 $(this).next().closest("tr").next().slideToggle();
+             });
+            function hideAllRow() {
+                $("#main #gridT > tbody > tr td.hoverEff").each(function (i, el) {
+                    $(this).next().closest("tr").next().hide();
+                });
+            }
+            hideAllRow();
+        });
+        //Edit click event handler.
+        $("body").on("click", "#SubGrid tbody .Edit", function () {
+            var row = $(this).closest("tr");
+            $("td", row).each(function () {
+                if ($(this).find(".text").length > 0) {
+                    $(this).find(".text").show();
+                    $(this).find(".display").hide();
+                }
+            });
+            row.find(".Update").show();
+            row.find(".Cancel").show();
+            row.find(".Delete").hide();
+            $(this).hide();
+        });
+        //Delete click event handler.
+        $('body').on('click', "#SubGrid tbody .Delete", function () {
+                            if (confirm("Are you sure to delete this data?")) {
+                                var tr = $(this).parents('tr:first');
+                                var OrderID = tr.find("#OrderID").html();
+                                var ProductID = tr.find("#ProductID").html();
+                                fetch(
+                                    '/Orders/DeleteData/',
+                                    {
+                                        method: 'POST',
+                                        headers: {
+                                            'content-type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            "orderid": OrderID,
+                                            "productid": ProductID
+                                        })
+                                    })
+                                    .then(function (data) {
+                                        console.log('Request success: ', data);
+                                        tr.remove();
+                                    })
+                                    .catch(function (error) {
+                                        console.log('Request failure: ', error);
+                                    });
+                            }
+                        });
+        //Update click event handler.
+        $("body").on("click", "#SubGrid tbody .Update", function () {
+            var row = $(this).closest("tr");
+            $("td", row).each(function () {
+                if ($(this).find(".text").length > 0) {
+                    var span = $(this).find(".display");
+                    var input = $(this).find(".text");
+                    span.html(input.val());
+                    span.show();
+                    input.hide();
+                }
+            });
+            row.find(".Edit").show();
+            row.find(".Delete").show();
+            row.find(".Cancel").hide();
+            $(this).hide();
+            //get Data
+            var Orderdetail = {};
+            Orderdetail.OrderID = row.find("#OrderID").html();
+            Orderdetail.ProductID = row.find("#ProductID").html();
+            Orderdetail.UnitPrice = row.find("#UnitPrice").html();
+            Orderdetail.Quantity = row.find("#Quantity").html();
+            Orderdetail.Discount = row.find("#Discount").html();
+            var Product = {};
+            Product.ProductID = row.find("#ProductID").html();
+            Product.ProductName = row.find("#ProductName").html();
+            Product.SupplierID = row.find("#SupplierID").html();
+            Product.CategoryID = row.find("#CategoryID").html();
+            Product.QuantityPerUnit = row.find("#QuantityPerUnit").html();
+            Product.UnitPrice = row.find("#UnitPrice").html();
+            Product.UnitsinStock = row.find("#UnitsinStock").html();
+            Product.UnitsOnOrder = row.find("#UnitsOnOrder").html();
+            Product.RecorderLevel = row.find("#RecorderLevel").html();
+            Product.Discontinued = row.find("#Discontinued").html();
+            //conbine to json data
+            var orderDetailProductViewModel = JSON.stringify({
+                "orderDetailProductViewModel": {
+                    "Orderdetail": Orderdetail,
+                    "Product": Product
+                }
+            });
+            //call api
+            fetch(
+                '/Orders/UpdateData/',
+                {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: orderDetailProductViewModel
+                })
+                .then(function (data) {
+                    console.log('Request success: ', data);
+                })
+                .catch(function (error) {
+                    console.log('Request failure: ', error);
+                });
+        });
+
+        //Cancel event handler.
+        $("body").on("click", "#SubGrid tbody .Cancel", function () {
+            var row = $(this).closest("tr");
+            $("td", row).each(function () {
+                if ($(this).find(".text").length > 0) {
+                    var span = $(this).find(".display");
+                    var input = $(this).find(".text");
+                    input.val(span.html());
+                    span.show();
+                    input.hide();
+                }
+            });
+            row.find(".Edit").show();
+            row.find(".Delete").show();
+            row.find(".Update").hide();
+            $(this).hide();
+        });
+        //Add event handler.
+        $("body").on("click", ".addBtn", function () {
+            if ($(".Add-Save").length == 0) {
+                //add row
+                var newRow = $(this).next().find("tbody").find("tr:last").after("<tr>" +
+                    "<td><input type='text' class='text OrderID-Add'/></td>" +
+                    "<td><input type='text' class='text ProductID-Add'/></td>" +
+                    "<td><input type='text' class='text UnitPrice-Add'/></td>" +
+                    "<td><input type='text' class='text Quantity-Add'/></td>" +
+                    "<td><input type='text' class='text Discount-Add'/></td>" +
+                    "<td></td>"+
+                    "<td><input type='text' class='text ProductName-Add'/></td>" +
+                    "<td><input type='text' class='text SupplierID-Add'/></td>" +
+                    "<td><input type='text' class='text CategoryID-Add'/></td>"+
+                    "<td><input type='text' class='text QuantityPerUnit-Add'/></td>"+
+                    "<td><input type='text' class='text UnitPrice-Add'/></td>"+
+                    "<td><input type='text' class='text UnitsinStock-Add'/></td>"+
+                    "<td><input type='text' class='text UnitsOnOrder-Add'/></td>"+
+                    "<td><input type='text' class='text RecorderLevel-Add'/></td>"+
+                    "<td><input type='text' class='text Discontinued-Add'/></td>"+
+                    "<td><a class='Add-Save' href=''>Save</a> <a class='Add-Cancel' href='javascript:;'>Cancel</a></td>"+
+                    "</tr>");
+            }
+            $("body").on("click", ".Add-Cancel", function () {
+                $(this).parent().parent().remove();
+            });
+            $(".Add-Save").on("click", function () {
+                var tr = $(this).parents('tr:first');
+                var orderid = tr.find('.OrderID-Add').val();
+                var productid = tr.find('.ProductID-Add').val();
+                var unitprice = tr.find('.UnitPrice-Add').val();
+                var quantity = tr.find('.Quantity-Add').val();
+                var discount = tr.find('.Discount-Add').val();
+                var productName = tr.find('.ProductName-Add').val();
+                var supplierID = tr.find('.SupplierID-Add').val();
+                var categoryID = tr.find('.CategoryID-Add').val();
+                var quantityPerUnit = tr.find('.QuantityPerUnit-Add').val();
+                var unitPrice = tr.find('.UnitPrice-Add').val();
+                var unitsinStock = tr.find('.UnitsinStock-Add').val();
+                var unitsOnOrder = tr.find('.UnitsOnOrder-Add').val();
+                var recorderLevel = tr.find('.RecorderLevel-Add').val();
+                var discontinued = tr.find('.Discontinued-Add').val();
+                var jsondata = JSON.stringify({
+                    "orderDetailProductViewModel": {
+                        "OrderDetail": {
+                            "OrderID": orderid,
+                            "ProductID": productid,
+                            "UnitPrice": unitprice,
+                            "Quantity": quantity,
+                            "Discount": discount
+                        }, "Product": {
+                            "ProductID": productid,
+                            "ProductName": productName,
+                            "SupplierID": supplierID,
+                            "CategoryID": categoryID,
+                            "QuantityPerUnit": quantityPerUnit,
+                            "UnitPrice": unitPrice,
+                            "UnitsinStock": unitsinStock,
+                            "UnitsOnOrder": unitsOnOrder,
+                            "RecorderLevel": recorderLevel,
+                            "Discontinued": discontinued
+                        }
+                    }
+                });
+                console.log(jsondata);
+                fetch(
+                    '/Orders/CreateData/',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: jsondata
+                    })
+                    .then(function (data) {  
+                        console.log('Request success: ', data);  
+                        tr.remove();
+                    })  
+                    .catch(function (error) {  
+                        console.log('Request failure: ', error);  
+                    });
+            });
+        });
+    </script>
+}
+
