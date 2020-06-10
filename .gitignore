@@ -1,0 +1,16 @@
+[Bb]in/
+[Dd]ebug/
+[Oo]bj/
+[Ll]ogs/
+[Rr]ef/
+
+.vs/
+
+*.csproj.user
+*.user
+*.bak
+*.log
+
+[Pp]ackages/
+
+ref/
