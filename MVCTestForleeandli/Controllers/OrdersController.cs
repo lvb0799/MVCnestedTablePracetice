@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using MVCTestForleeandli.Models;
 using MVCTestForleeandli.ViewModel;
+using Newtonsoft.Json;
 
 namespace MVCTestForleeandli.Controllers
 {
@@ -19,6 +20,7 @@ namespace MVCTestForleeandli.Controllers
         public async Task<ActionResult> Index()
         {
             var master= await db.Orders.ToListAsync();
+
             var detail = await (from od in db.OrderDetails
                                 join p in db.Products
                                 on od.ProductID equals p.ProductID
@@ -35,7 +37,7 @@ namespace MVCTestForleeandli.Controllers
             return View(allData);
         }
         [HttpPost]
-        public async Task<ActionResult> CreateData([System.Web.Http.FromBody]OrderDetailProductViewModel orderDetailProductViewModel)
+        public async Task<JsonResult> CreateData([System.Web.Http.FromBody]OrderDetailProductViewModel orderDetailProductViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -48,13 +50,13 @@ namespace MVCTestForleeandli.Controllers
                         db.Products.Add(orderDetailProductViewModel.Product);
                     await db.SaveChangesAsync();
                 }
-                return RedirectToAction("Index");
+                return Json(new { Result = "Create OK" });
             }
 
-            return View(orderDetailProductViewModel);
+            return Json(new { Result = "Create Fail" });
         }
         [HttpPost]
-        public async Task<ActionResult> UpdateData([System.Web.Http.FromBody]OrderDetailProductViewModel orderDetailProductViewModel)
+        public async Task<JsonResult> UpdateData([System.Web.Http.FromBody]OrderDetailProductViewModel orderDetailProductViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -63,12 +65,12 @@ namespace MVCTestForleeandli.Controllers
                 db.Entry(orderDetailProductViewModel.OrderDetail).State = EntityState.Modified;
                 db.Entry(orderDetailProductViewModel.Product).State = EntityState.Modified;
                 await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return Json(new { Result = "Save OK" });
             }
-            return View(orderDetailProductViewModel);
+            return Json(new { Result = "Save Fail" });
         }
         [HttpPost]
-        public async Task<ActionResult> DeleteData([System.Web.Http.FromBody]int orderid,int productid)
+        public async Task<JsonResult> DeleteData([System.Web.Http.FromBody]int orderid,int productid)
         {
             if (ModelState.IsValid)
             {
@@ -77,9 +79,9 @@ namespace MVCTestForleeandli.Controllers
                 OrderDetails orderDetails=await db.OrderDetails.FindAsync(orderid, productid);
                 db.OrderDetails.Remove(orderDetails);
                 await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return Json(new { Orderid=orderid, Productid=productid });
             }
-            return View(new object());
+            return null;
         }
         protected override void Dispose(bool disposing)
         {
