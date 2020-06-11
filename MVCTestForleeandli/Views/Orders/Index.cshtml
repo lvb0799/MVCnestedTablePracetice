@@ -263,7 +263,7 @@
                     "<td><input type='text' class='text UnitsOnOrder-Add'/></td>"+
                     "<td><input type='text' class='text RecorderLevel-Add'/></td>"+
                     "<td><input type='text' class='text Discontinued-Add'/></td>"+
-                    "<td><a class='Add-Save' href=''>Save</a> <a class='Add-Cancel' href='javascript:;'>Cancel</a></td>"+
+                    "<td><a class='Add-Save' href='javascript:;'>Save</a> <a class='Add-Cancel' href='javascript:;'>Cancel</a></td>"+
                     "</tr>");
             }
             $("body").on("click", ".Add-Cancel", function () {
@@ -320,6 +320,7 @@
                     .then(function (data) {  
                         console.log('Request success: ', data);  
                         tr.remove();
+                        window.location.href = '/Orders/';
                     })  
                     .catch(function (error) {  
                         console.log('Request failure: ', error);  
